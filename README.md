@@ -4,7 +4,7 @@ A desktop app for people who are tired of writing throwaway scripts to move data
 
 **GPL-3.0-or-later** · **v0.0.0-experimental** · currently available for Linux only, might make it available to Windows later.
 
-##Presentation
+## Presentation
 
 https://youtu.be/5DlpbQOPMj8
 
