@@ -4,6 +4,10 @@ A desktop app for people who are tired of writing throwaway scripts to move data
 
 **GPL-3.0-or-later** · **v0.0.0-dev** · Linux first (Windows/macOS later)
 
+## Demo
+
+https://youtu.be/5DlpbQOPMj8
+
 ## What it does
 
 - **Connect to PostgreSQL, MySQL, or MariaDB** — passwords stay in your system keyring, never in config files. Supports TLS and SSH tunnels.
