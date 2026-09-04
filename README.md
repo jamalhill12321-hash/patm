@@ -2,9 +2,9 @@
 
 A desktop app for people who are tired of writing throwaway scripts to move data between databases. Connect, query, export, transfer — all in one place.
 
-**GPL-3.0-or-later** · **v0.0.0-dev** · Linux first (Windows/macOS later)
+**GPL-3.0-or-later** · **v0.0.0-experimental** · currently available for Linux only, might make it available to Windows later.
 
-## Demo
+##Presentation
 
 https://youtu.be/5DlpbQOPMj8
 
