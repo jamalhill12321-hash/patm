@@ -1,0 +1,15 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/org/patm/ui">
+    <file alias="fusion-light.qss">fusion-light.qss</file>
+    <file alias="fusion-dark.qss">fusion-dark.qss</file>
+    <file alias="breeze-light.qss">breeze-light.qss</file>
+    <file alias="breeze-dark.qss">breeze-dark.qss</file>
+    <file alias="classic-light.qss">classic-light.qss</file>
+    <file alias="classic-dark.qss">classic-dark.qss</file>
+    <file alias="win9x.qss">win9x.qss</file>
+  </qresource>
+  <qresource prefix="/org/patm/assets">
+    <file alias="patm-icon.svg">patm-icon.svg</file>
+  </qresource>
+</RCC>

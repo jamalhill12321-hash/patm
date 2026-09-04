@@ -1,0 +1,6 @@
+#ifndef PATM_VERSION_H
+#define PATM_VERSION_H
+
+#define PATM_VERSION "@PROJECT_VERSION@-@VERSION_STAGE@"
+
+#endif

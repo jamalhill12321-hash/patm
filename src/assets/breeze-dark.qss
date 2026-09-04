@@ -1,0 +1,138 @@
+/* PATM Breeze Dark — Qt QSS */
+/* palette: window_bg=#2a2e32 base=#1b1e20 text=#fcfcfc highlight=#3daee9 */
+
+QMainWindow, QDialog {
+    background-color: #2a2e32;
+    color: #fcfcfc;
+}
+
+QLabel { color: #fcfcfc; }
+QLabel:disabled { color: #63676c; }
+
+QLineEdit, QTextEdit, QPlainTextEdit {
+    background-color: #1b1e20;
+    color: #fcfcfc;
+    border: 1px solid #464b50;
+    border-radius: 2px;
+    padding: 3px 6px;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus { border-color: #3daee9; }
+QLineEdit:disabled, QTextEdit:disabled, QPlainTextEdit:disabled {
+    background-color: #2a2e32; color: #63676c; border-color: #3b4045;
+}
+QLineEdit::placeholderText { color: #66696d; }
+
+QSpinBox, QDoubleSpinBox {
+    background-color: #1b1e20; color: #fcfcfc;
+    border: 1px solid #464b50; border-radius: 2px; padding: 3px 6px;
+}
+
+QPushButton {
+    background-color: #31363b;
+    color: #fcfcfc;
+    border: 1px solid #464b50;
+    border-radius: 2px;
+    padding: 3px 14px;
+}
+QPushButton:hover { background-color: #3b4045; border-color: #464b50; }
+QPushButton:pressed { background-color: #26292c; }
+QPushButton:checked { background-color: #3daee9; border-color: #3daee9; color: #fcfcfc; }
+QPushButton:disabled { background-color: #2a2e32; color: #63676c; border-color: #3b4045; }
+
+QToolButton {
+    background-color: #31363b;
+    color: #fcfcfc;
+    border: 1px solid #464b50;
+    border-radius: 2px;
+    padding: 3px 14px;
+}
+QToolButton:hover { background-color: #3b4045; border-color: #464b50; }
+QToolButton:pressed { background-color: #26292c; }
+QToolButton:checked { background-color: #3daee9; border-color: #3daee9; color: #fcfcfc; }
+QToolButton:disabled { background-color: #2a2e32; color: #63676c; border-color: #3b4045; }
+
+QListWidget, QListView { background-color: #1b1e20; color: #fcfcfc; }
+QListWidget::item, QListView::item { padding: 2px 6px; }
+QListWidget::item:selected, QListView::item:selected { background-color: #3daee9; color: #fcfcfc; }
+
+QScrollArea { background-color: #1b1e20; border: 1px solid #383d41; }
+QSplitter::handle { background-color: #3b4045; min-width: 2px; min-height: 2px; }
+
+QScrollBar { background: transparent; border: none; }
+QScrollBar::handle { background-color: #454b51; border-radius: 5px; min-width: 8px; min-height: 8px; }
+QScrollBar::handle:hover { background-color: #565c62; }
+
+QComboBox QAbstractItemView {
+    background-color: #1b1e20; color: #fcfcfc;
+    selection-background-color: #3daee9; selection-color: #fcfcfc;
+}
+QComboBox {
+    background-color: #1b1e20; color: #fcfcfc;
+    border: 1px solid #464b50; border-radius: 2px; padding: 3px 6px;
+}
+
+QTableWidget { background-color: #1b1e20; color: #fcfcfc; gridline-color: #383d41; border: 1px solid #383d41; }
+QTableWidget::item:selected { background-color: #3daee9; color: #fcfcfc; }
+QHeaderView::section { background-color: #2a2e32; color: #fcfcfc; border: 1px solid #383d41; padding: 4px; }
+
+QTabBar::tab {
+    background-color: #22262a;
+    color: #8c929a;
+    border: 1px solid #383d41;
+    border-bottom: none;
+    padding: 4px 12px;
+    margin-right: 1px;
+}
+QTabBar::tab:selected {
+    background-color: #2a2e32;
+    color: #fcfcfc;
+}
+QTabBar::tab:hover:!selected {
+    background-color: #35393e;
+}
+
+QStatusBar {
+    background-color: #2a2e32;
+    color: #8c929a;
+}
+
+QMenuBar {
+    background-color: #2a2e32;
+    color: #fcfcfc;
+}
+QMenuBar::item:selected {
+    background-color: #35393e;
+}
+
+QMenu {
+    background-color: #1b1e20;
+    color: #fcfcfc;
+    border: 1px solid #383d41;
+}
+QMenu::item:selected {
+    background-color: #3daee9;
+    color: #fcfcfc;
+}
+
+QGroupBox {
+    color: #fcfcfc;
+    border: 1px solid #383d41;
+    border-radius: 2px;
+    margin-top: 8px;
+    padding-top: 8px;
+}
+
+QToolTip {
+    background-color: #1b1e20;
+    color: #fcfcfc;
+    border: 1px solid #383d41;
+}
+
+QToolBar {
+    background-color: #2a2e32;
+    border-bottom: 1px solid #383d41;
+}
+
+#tab-button { padding: 2px 10px; border-radius: 0; min-height: 0; }
+#welcome-title { color: #fcfcfc; font-size: 28px; font-weight: bold; }
+#welcome-sub { color: #fcfcfc; font-size: 14px; }

@@ -1,0 +1,12 @@
+build/
+build-*/
+*.o
+*.a
+*.so
+compile_commands.json
+.cache/
+__pycache__/
+*.pyc
+.DS_Store
+AGENTS.md
+export.csv
