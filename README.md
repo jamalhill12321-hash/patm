@@ -23,6 +23,18 @@ https://youtu.be/5DlpbQOPMj8
 sudo dnf install gcc make cmake qt6-qtbase-devel qt6-qtsvg-devel \
     libpq-devel mariadb-connector-c-devel python3-devel libsecret-devel
 
+# Ubuntu/Debian
+sudo apt update && sudo apt install -y \
+    gcc make cmake \
+    qt6-base-dev qt6-svg-dev \
+    libpq-dev libmariadb-dev python3-dev libsecret-1-dev
+
+#Arch (Pacman)
+sudo pacman -Syu --needed \
+    gcc make cmake \
+    qt6-base qt6-svg \
+    postgresql-libs mariadb-libs python libsecret
+
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ctest --test-dir build --output-on-failure
