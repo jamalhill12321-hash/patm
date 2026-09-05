@@ -29,7 +29,7 @@ sudo apt update && sudo apt install -y \
     qt6-base-dev qt6-svg-dev \
     libpq-dev libmariadb-dev python3-dev libsecret-1-dev
 
-#Arch (Pacman)
+# Arch (Pacman)
 sudo pacman -Syu --needed \
     gcc make cmake \
     qt6-base qt6-svg \
