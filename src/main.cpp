@@ -18,6 +18,8 @@
  */
 
 #include <QApplication>
+#include <QDir>
+#include <QFile>
 #include <QIcon>
 #include <QMessageBox>
 #include <QProcess>
@@ -26,6 +28,13 @@
 #include "ui/c_backend.h"
 #include "ui/mainwindow.h"
 #include "ui/thememanager.h"
+
+static bool isConfigured()
+{
+    QString d = QDir::homePath() + "/.config/patm";
+    return QFile::exists(d + "/connections.conf") ||
+           QFile::exists(d + "/session.conf");
+}
 
 int main(int argc, char *argv[])
 {
@@ -37,10 +46,13 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":/org/patm/assets/patm-icon.svg"));
 
     bool uninstallMode = false;
+    bool appMode = false;
     for (int i = 1; i < argc; i++) {
         QString arg = argv[i];
         if (arg == "--uninstall" || arg == "-u")
             uninstallMode = true;
+        if (arg == "--app")
+            appMode = true;
     }
 
     if (uninstallMode) {
@@ -55,6 +67,31 @@ int main(int argc, char *argv[])
         return ret;
     }
 
+    if (appMode || isConfigured()) {
+        PatmUiSettings ui;
+        PatmError load_err = patm_ui_settings_load(&ui);
+        if (patm_is_ok(&load_err))
+            PatmThemeManager::apply(ui);
+
+        PatmError err = patm_pipeline_init();
+        if (!patm_is_ok(&err))
+            qWarning("Python engine init failed: %s", err.msg);
+
+        char latest[64];
+        if (patm_update_check(latest, sizeof(latest)) ==
+            PATM_UPDATE_AVAILABLE)
+            qWarning("A newer PATM version is available: %s", latest);
+
+        MainWindow *win = new MainWindow();
+        win->setPalette(qApp->palette());
+        win->showMaximized();
+
+        int ret = app.exec();
+        patm_pipeline_finalize();
+        delete win;
+        return ret;
+    }
+
     InstallerWizard wizard;
     wizard.show();
     int ret = wizard.exec();
@@ -65,7 +102,7 @@ int main(int argc, char *argv[])
             "Installation complete! You can now launch PATM "
             "from your application menu or terminal.");
         if (shouldOpen)
-            QProcess::startDetached(wizard.installPath() + "/patm");
+            QProcess::startDetached(wizard.installPath() + "/patm --app");
     }
     return ret;
 }
