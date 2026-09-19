@@ -8,5 +8,4 @@ compile_commands.json
 __pycache__/
 *.pyc
 .DS_Store
-AGENTS.md
 export.csv
