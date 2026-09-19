@@ -812,6 +812,14 @@ void ProgressPage::runInstall()
     m_statusLabel->setText("Installation complete!");
     m_progress->setRange(0, 1);
     m_progress->setValue(1);
+
+    /* Write installed marker so the app knows to skip the installer */
+    QString markerDir = QDir::homePath() + "/.config/patm";
+    QDir().mkpath(markerDir);
+    QFile marker(markerDir + "/.installed");
+    if (marker.open(QIODevice::WriteOnly | QIODevice::Text))
+        marker.write("1\n");
+
     appendLog(m_log, "\n========================================");
     appendLog(m_log, "  Installation complete!");
     appendLog(m_log, "========================================");
@@ -1250,6 +1258,14 @@ void UninstallProgressPage::runUninstall()
     }
 
     /* Step 4: Purge configs if requested */
+    /* Always remove the installed marker so reinstall shows installer */
+    {
+        QString marker = QDir::homePath() + "/.config/patm/.installed";
+        if (QFile::exists(marker)) {
+            QFile::remove(marker);
+            appendUninstallLog(m_log, "  Removed installed marker.");
+        }
+    }
     if (purge) {
         m_statusLabel->setText("Purging configuration...");
         appendUninstallLog(m_log, "\n==> Purging configuration and user data...");
@@ -1258,6 +1274,7 @@ void UninstallProgressPage::runUninstall()
         if (QDir(configDir).exists()) {
             /* Remove individual files first */
             QStringList configFiles = {
+                configDir + "/.installed",
                 configDir + "/connections.conf",
                 configDir + "/ui.conf",
                 configDir + "/session.conf",

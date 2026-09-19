@@ -32,8 +32,7 @@
 static bool isConfigured()
 {
     QString d = QDir::homePath() + "/.config/patm";
-    return QFile::exists(d + "/connections.conf") ||
-           QFile::exists(d + "/session.conf");
+    return QFile::exists(d + "/.installed");
 }
 
 int main(int argc, char *argv[])
@@ -102,7 +101,8 @@ int main(int argc, char *argv[])
             "Installation complete! You can now launch PATM "
             "from your application menu or terminal.");
         if (shouldOpen)
-            QProcess::startDetached(wizard.installPath() + "/patm --app");
+            QProcess::startDetached(wizard.installPath() + "/patm",
+                                    {"--app"});
     }
     return ret;
 }
