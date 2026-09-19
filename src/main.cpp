@@ -18,35 +18,14 @@
  */
 
 #include <QApplication>
-#include <QDir>
-#include <QFile>
 #include <QIcon>
 #include <QMessageBox>
 #include <QProcess>
-#include <QString>
 
 #include "installerwizard.h"
 #include "ui/c_backend.h"
 #include "ui/mainwindow.h"
 #include "ui/thememanager.h"
-
-static bool isInstalled()
-{
-    QString configDir =
-        QDir::homePath() + "/.config/patm";
-    return QFile::exists(configDir + "/connections.conf") ||
-           QFile::exists(configDir + "/session.conf");
-}
-
-static bool hasInstallFlag(int argc, char *argv[])
-{
-    for (int i = 1; i < argc; i++) {
-        QString arg = argv[i];
-        if (arg == "--install" || arg == "-i" || arg == "--setup")
-            return true;
-    }
-    return false;
-}
 
 int main(int argc, char *argv[])
 {
@@ -64,57 +43,29 @@ int main(int argc, char *argv[])
             uninstallMode = true;
     }
 
-    bool needsInstall = !isInstalled() || hasInstallFlag(argc, argv);
-
-    if (uninstallMode || needsInstall) {
-        if (uninstallMode) {
-            UninstallerWizard wizard;
-            wizard.show();
-            int ret = wizard.exec();
-            if (ret == QDialog::Accepted) {
-                QMessageBox::information(
-                    nullptr, "PATM",
-                    "PATM has been uninstalled successfully.");
-            }
-            return ret;
-        }
-
-        InstallerWizard wizard;
+    if (uninstallMode) {
+        UninstallerWizard wizard;
         wizard.show();
         int ret = wizard.exec();
         if (ret == QDialog::Accepted) {
-            bool shouldOpen = wizard.autoOpenApp();
             QMessageBox::information(
                 nullptr, "PATM",
-                "Installation complete! You can now launch PATM "
-                "from your application menu or terminal.");
-            if (shouldOpen)
-                QProcess::startDetached(wizard.installPath() + "/patm");
+                "PATM has been uninstalled successfully.");
         }
         return ret;
     }
 
-    PatmUiSettings ui;
-    PatmError load_err = patm_ui_settings_load(&ui);
-    if (patm_is_ok(&load_err))
-        PatmThemeManager::apply(ui);
-
-    PatmError err = patm_pipeline_init();
-    if (!patm_is_ok(&err))
-        qWarning("Python engine init failed: %s", err.msg);
-
-    char latest[64];
-    if (patm_update_check(latest, sizeof(latest)) ==
-        PATM_UPDATE_AVAILABLE)
-        qWarning("A newer PATM version is available: %s", latest);
-
-    MainWindow *win = new MainWindow();
-    win->setPalette(qApp->palette());
-    win->showMaximized();
-
-    int ret = app.exec();
-
-    patm_pipeline_finalize();
-    delete win;
+    InstallerWizard wizard;
+    wizard.show();
+    int ret = wizard.exec();
+    if (ret == QDialog::Accepted) {
+        bool shouldOpen = wizard.autoOpenApp();
+        QMessageBox::information(
+            nullptr, "PATM",
+            "Installation complete! You can now launch PATM "
+            "from your application menu or terminal.");
+        if (shouldOpen)
+            QProcess::startDetached(wizard.installPath() + "/patm");
+    }
     return ret;
 }
