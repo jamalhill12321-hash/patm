@@ -6,7 +6,7 @@ A desktop app for people who are tired of writing throwaway scripts to move data
 
 ## Quick start
 
-PATM is available on [Flathub](https://flathub.org/apps/org.patm.jam). Install it from your distro's app store:
+PATM will potentially be available on [Flathub](https://flathub.org/apps/org.patm.jam) (under review, for now it's better going with the release build). You either find it in any linux-based app stores that support flathub or by writing commands:
 
 ```sh
 # Fedora
