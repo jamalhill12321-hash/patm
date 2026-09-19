@@ -26,6 +26,7 @@
 #define CHECK(expr)                       \
     do {                                  \
         PatmError e_ = (expr);            \
+        (void)e_;                         \
         assert(patm_is_ok(&e_));          \
     } while (0)
 

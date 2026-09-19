@@ -26,6 +26,7 @@
 #define CHECK(expr)                       \
     do {                                  \
         PatmError e_ = (expr);            \
+        (void)e_;                         \
         assert(patm_is_ok(&e_));          \
     } while (0)
 
@@ -49,6 +50,7 @@ static void test_pg_quote_ident(void)
     {
         PatmError e = d->quote_ident("", buf, sizeof(buf));
         assert(!patm_is_ok(&e));
+        (void)e;
     }
 }
 

@@ -538,54 +538,10 @@ void ProgressPage::runInstall()
 
     /* Step 2: Copy binary (look for it relative to installer or in build dir) */
     appendLog(m_log, "==> Installing PATM binary...");
-    appendLog(m_log, "  Installer location: " + QCoreApplication::applicationDirPath());
-    appendLog(m_log, "  Working directory:  " + QDir::currentPath());
 
-    /* Try to find the built binary — check many possible locations */
-    QString binarySrc;
-    QString appDir = QCoreApplication::applicationDirPath();
-    QString cwd = QDir::currentPath();
-    QStringList searchPaths = {
-        appDir + "/../src/patm",
-        appDir + "/src/patm",
-        appDir + "/patm",
-        cwd + "/build/src/patm",
-        cwd + "/src/patm",
-        cwd + "/patm",
-        QDir::homePath() + "/patm/build/src/patm",
-        "/tmp/patm-build/src/patm",
-        "/tmp/patm/build/src/patm",
-    };
-
-    if (binarySrc.isEmpty()) {
-        QString probe = appDir;
-        for (int i = 0; i < 5 && !probe.isEmpty(); i++) {
-            QString candidate = probe + "/build/src/patm";
-            if (QFile::exists(candidate)) { binarySrc = candidate; break; }
-            candidate = probe + "/src/patm";
-            if (QFile::exists(candidate)) { binarySrc = candidate; break; }
-            probe = QFileInfo(probe).path();
-        }
-    }
-
-    for (const QString &p : searchPaths) {
-        if (QFile::exists(p)) {
-            binarySrc = p;
-            break;
-        }
-    }
-
-    if (binarySrc.isEmpty()) {
-        appendLog(m_log, "  Binary NOT found in any search path.");
-        appendLog(m_log, "  Please locate the 'patm' binary manually.");
-
-        QString manualPath = QFileDialog::getOpenFileName(
-            nullptr, "Locate the 'patm' binary",
-            QDir::homePath(),
-            "patm binary (patm);;All files (*)");
-        if (!manualPath.isEmpty() && QFile::exists(manualPath))
-            binarySrc = manualPath;
-    }
+    /* The binary IS the installer — just copy ourselves */
+    QString binarySrc = QCoreApplication::applicationFilePath();
+    appendLog(m_log, "  Source (self): " + binarySrc);
 
     if (!binarySrc.isEmpty()) {
         appendLog(m_log, "  Source: " + binarySrc);

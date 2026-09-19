@@ -27,6 +27,7 @@
 #define CHECK(expr)                       \
     do {                                  \
         PatmError e_ = (expr);            \
+        (void)e_;                         \
         assert(patm_is_ok(&e_));          \
     } while (0)
 
@@ -110,6 +111,7 @@ static void test_add_remove_find(void)
     /* Duplicate id rejected. */
     {
         PatmError e = patm_config_add(&cfg, &p);
+        (void)e;
         assert(!patm_is_ok(&e));
     }
 
@@ -118,6 +120,7 @@ static void test_add_remove_find(void)
     bad.host[0] = '\0';
     {
         PatmError e = patm_config_add(&cfg, &bad);
+        (void)e;
         assert(!patm_is_ok(&e));
     }
 
@@ -125,6 +128,7 @@ static void test_add_remove_find(void)
     assert(patm_config_find(&cfg, "test1") == NULL);
     {
         PatmError e = patm_config_remove(&cfg, "test1");
+        (void)e;
         assert(!patm_is_ok(&e));
     }
 }
@@ -153,6 +157,7 @@ static void test_session_roundtrip(void)
         fseek(f, 0, SEEK_END);
         long sz = ftell(f);
         fclose(f);
+        (void)sz;
         assert(sz > 0);
     }
 
@@ -178,6 +183,7 @@ static void test_session_roundtrip(void)
         fseek(f, 0, SEEK_END);
         long sz = ftell(f);
         fclose(f);
+        (void)sz;
         assert(sz == 0);
     }
 }

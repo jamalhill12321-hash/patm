@@ -18,8 +18,6 @@
  */
 
 #include <QApplication>
-#include <QDir>
-#include <QFile>
 #include <QIcon>
 #include <QMessageBox>
 #include <QProcess>
@@ -29,10 +27,12 @@
 #include "ui/mainwindow.h"
 #include "ui/thememanager.h"
 
-static bool isConfigured()
+static bool isInstalledBinary()
 {
-    QString d = QDir::homePath() + "/.config/patm";
-    return QFile::exists(d + "/.installed");
+    QString self = QCoreApplication::applicationFilePath();
+    return self.startsWith("/opt/patm/") ||
+           self.startsWith("/usr/bin/patm") ||
+           self.startsWith("/usr/local/bin/patm");
 }
 
 int main(int argc, char *argv[])
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
         return ret;
     }
 
-    if (appMode || isConfigured()) {
+    if (appMode || isInstalledBinary()) {
         PatmUiSettings ui;
         PatmError load_err = patm_ui_settings_load(&ui);
         if (patm_is_ok(&load_err))
