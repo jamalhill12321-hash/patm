@@ -2,7 +2,7 @@
 
 A desktop app for people who are tired of writing throwaway scripts to move data between databases. Connect, query, tools, all in one place.
 
-**GPL-3.0-or-later** · **v0.0.0-experimental** · currently available for Linux only, might make it available to Windows later.
+**GPL-3.0-or-later** · **v0.0.0-experimental patch 00** · currently available for Linux only, might make it available to Windows later.
 
 ## Presentation
 
@@ -15,6 +15,7 @@ https://youtu.be/5DlpbQOPMj8
 - **SQL query windows** : write queries, highlight and execute just the selection (or all of it). Save/load `.sql` files. Results show up in a grid.
 - **SQL terminal** : Get access to SQL with commands.
 - **Run tools** : built-in CSV export and table transfer. Write your own Python tools; PATM sandboxes them through a restricted API so they can query data but never touch credentials.
+- **Built-in installer** : one binary handles installation, setup, and the app itself.
 
 ## Building
 
@@ -37,13 +38,26 @@ sudo pacman -Syu --needed \
 
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
-ctest --test-dir build --output-on-failure
 ./build/src/patm
+```
+
+On first run, PATM shows an installer wizard that sets up SQL engines, desktop shortcuts, and config. After that it opens straight into the app.
+
+### Command line flags
+
+```
+./patm              — launch app (shows installer on first run)
+./patm --install    — force the installer wizard
+./patm --uninstall  — run the uninstaller
 ```
 
 ## Testing
 
-Run `ctest --test-dir build --output-on-failure`. The `pg_integration` test skips itself when no PostgreSQL server is running — that's normal.
+```sh
+ctest --test-dir build --output-on-failure
+```
+
+The `pg_integration` test skips itself when no PostgreSQL server is running — that's normal.
 
 ## How tools work
 

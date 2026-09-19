@@ -26,11 +26,13 @@ add_library(patm_core STATIC
     ui/settingsdialog.cpp
     ui/connectionpropertiesdialog.cpp
     ui/thememanager.cpp
+    ../installer/installerwizard.cpp
     ${CMAKE_SOURCE_DIR}/src/assets/resources.qrc
 )
 
 target_include_directories(patm_core PUBLIC
     ${CMAKE_SOURCE_DIR}/src
+    ${CMAKE_SOURCE_DIR}/installer
     ${CMAKE_BINARY_DIR}/generated
 )
 
