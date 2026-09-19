@@ -144,6 +144,7 @@ static PatmError my_query(PatmConn *conn, const char *sql, PatmResult *out)
     unsigned long nrows = mysql_num_rows(res);
     PatmError err = patm_ok();
     size_t idx = 0;
+    char **cells = NULL;
 
     /* column names */
     MYSQL_FIELD *fields = mysql_fetch_fields(res);
@@ -162,7 +163,7 @@ static PatmError my_query(PatmConn *conn, const char *sql, PatmResult *out)
         }
     }
 
-    char **cells = calloc(nrows ? nrows : 1, ncols ? sizeof(char *) : 1);
+    cells = calloc(nrows ? nrows : 1, ncols ? sizeof(char *) : 1);
     if (!cells) {
         err = patm_error(PATM_ERR_MEMORY, "result cells allocation failed");
         goto done;

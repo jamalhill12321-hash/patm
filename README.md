@@ -4,6 +4,17 @@ A desktop app for people who are tired of writing throwaway scripts to move data
 
 **GPL-3.0-or-later** · **v0.0.0-experimental patch 00** · currently available for Linux only, might make it available to Windows later.
 
+## Quick start
+
+Download the prebuilt binary from [Releases](https://github.com/jamalhill12321-hash/patm/releases), then:
+
+```sh
+chmod +x patm
+./patm
+```
+
+The installer wizard handles everything from there.
+
 ## Presentation
 
 https://youtu.be/5DlpbQOPMj8
@@ -46,8 +57,8 @@ On first run, PATM shows an installer wizard that sets up SQL engines, desktop s
 ### Command line flags
 
 ```
-./patm              — launch app (shows installer on first run)
-./patm --install    — force the installer wizard
+./patm              — launch app (shows installer if not set up)
+./patm --app        — skip installer, go straight to app
 ./patm --uninstall  — run the uninstaller
 ```
 
