@@ -9,7 +9,7 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(VERSION_STAGE "experimental patch 01")
+set(VERSION_STAGE "experimental patch 11")
 configure_file(${CMAKE_SOURCE_DIR}/src/core/version.h.in ${CMAKE_BINARY_DIR}/generated/version.h @ONLY)
 
 if(NOT CMAKE_BUILD_TYPE)

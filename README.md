@@ -2,7 +2,7 @@
 
 A desktop app for people who are tired of writing throwaway scripts to move data between databases. Connect, query, tools, all in one place.
 
-**GPL-3.0-or-later** · **v0.0.0-experimental patch 01** · currently available for Linux only, might make it available to Windows later.
+**GPL-3.0-or-later** · **v0.0.0-experimental patch 11** · currently available for Linux only, might make it available to Windows later.
 
 ## Quick start
 
