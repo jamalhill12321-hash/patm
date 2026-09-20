@@ -5,19 +5,6 @@
       <br><sub><b>Database Manager View</b></sub>
     </td>
     <td width="50%" align="center">
-      <img src="URL_OF_YOUR_SECOND_IMAGE" alt="Automation Interface" style="max-width:100%;">
-      <br><sub><b>Automation Tools View</b></sub>
-    </td>
-  </tr>
-</table>
-
-<table width="100%">
-  <tr>
-    <td width="50%" align="center">
-      <img src="https://github.com" alt="Database Interface" style="max-width:100%;">
-      <br><sub><b>Database Manager View</b></sub>
-    </td>
-    <td width="50%" align="center">
       <img src="https://github.com/user-attachments/assets/151d827d-6b37-4bf1-8a31-e9986709df4c" alt="Automation Interface" style="max-width:100%;">
       <br><sub><b>Automation Tools View</b></sub>
     </td>
