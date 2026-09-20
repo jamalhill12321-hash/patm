@@ -51,3 +51,9 @@ target_link_libraries(patm_core PUBLIC
 
 add_executable(patm main.cpp)
 target_link_libraries(patm PRIVATE patm_core)
+
+install(TARGETS patm DESTINATION bin)
+install(FILES assets/org.patm.jam.desktop DESTINATION share/applications)
+install(FILES assets/org.patm.jam.metainfo.xml DESTINATION share/metainfo)
+install(FILES assets/patm-icon.svg DESTINATION share/icons/hicolor/scalable/apps RENAME org.patm.jam.svg)
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/tools/ DESTINATION share/patm/tools)
