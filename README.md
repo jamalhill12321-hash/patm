@@ -20,11 +20,10 @@ flatpak install flathub org.patm.jam
 flatpak install flathub org.patm.jam
 ```
 
-Or download the prebuilt binary from [Releases](https://github.com/jamalhill12321-hash/patm/releases):
+Or download the AppImage from [Releases](https://github.com/jamalhill12321-hash/patm/releases) and double-click it to run:
 
 ```sh
-chmod +x patm
-./patm
+./patm-linux-x86_64.AppImage
 ```
 
 ## Presentation
