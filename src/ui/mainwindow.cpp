@@ -23,6 +23,7 @@
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QDialog>
+#include <QFile>
 #include <QFileDialog>
 #include <QFormLayout>
 #include <QHBoxLayout>
@@ -36,6 +37,8 @@
 #include <QSplitter>
 #include <QStatusBar>
 #include <QTabWidget>
+#include <QTextBrowser>
+#include <QTextStream>
 #include <QToolBar>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -144,6 +147,8 @@ void MainWindow::setupToolBar()
     addBtn("Run Tool", [this]() { onRunTool(); }, &m_btnRunTool);
     addBtn("SQL Query", [this]() { onSqlQuery(); });
     addBtn("SQL Terminal", [this]() { onSqlTerminal(); });
+    addBtn("DB Stats", [this]() { onDbStats(); });
+    addBtn("Export SQL", [this]() { onExportSql(); });
     toolbar->addSeparator();
     addBtn("Settings", [this]() { onSettings(); });
 }
@@ -377,7 +382,7 @@ void MainWindow::onNewConnection()
     QFormLayout *fl = new QFormLayout(&dlg);
 
     QComboBox *engineCombo = new QComboBox;
-    engineCombo->addItems({"PostgreSQL", "MySQL", "MariaDB"});
+    engineCombo->addItems({"PostgreSQL", "MySQL", "MariaDB", "SQLite"});
     fl->addRow("Engine:", engineCombo);
 
     QLineEdit *idEdit = new QLineEdit;
@@ -559,6 +564,191 @@ void MainWindow::onSqlTerminal()
         QString::fromUtf8(m_activeProfile->id));
     int idx = addTab(st, QString("Terminal - %1").arg(m_activeProfile->id));
     m_tabWidget->setCurrentIndex(idx);
+}
+
+void MainWindow::onDbStats()
+{
+    if (!m_activeConn || !m_activeProfile) {
+        setStatus("Connect to a database first.");
+        return;
+    }
+
+    PatmStrBuf json = {};
+    PatmError err = patm_db_list_tables(m_activeConn, &json);
+    if (!patm_is_ok(&err)) {
+        setStatus(QString("DB Stats failed: %1").arg(err.msg));
+        patm_strbuf_free(&json);
+        return;
+    }
+
+    /* Parse table names */
+    QStringList tables;
+    const char *p = json.data ? json.data : "";
+    char name[256];
+    while ((p = strchr(p, '"')) != nullptr) {
+        p++;
+        const char *end = strchr(p, '"');
+        if (!end) break;
+        size_t len = (size_t)(end - p);
+        if (len >= sizeof(name)) len = sizeof(name) - 1;
+        memcpy(name, p, len);
+        name[len] = '\0';
+        tables.append(QString::fromUtf8(name));
+        p = end + 1;
+    }
+    patm_strbuf_free(&json);
+
+    /* Build stats query — works for all engines */
+    QString stats;
+    stats += "<h3>Database Statistics</h3>";
+    stats += QString("<p><b>Engine:</b> %1</p>").arg(m_activeProfile->engine >= 0 && m_activeProfile->engine < PATM_DB_ENGINE_COUNT
+        ? patm_db_driver_get(m_activeProfile->engine)->display : "Unknown");
+    stats += QString("<p><b>Database:</b> %1</p>").arg(m_activeProfile->dbname);
+    stats += QString("<p><b>Tables:</b> %1</p>").arg(tables.size());
+    stats += "<table border='1' cellpadding='4' cellspacing='0'>";
+    stats += "<tr><th>Table</th><th>Rows</th></tr>";
+
+    size_t totalRows = 0;
+    for (const QString &t : tables) {
+        QByteArray quoted(256, '\0');
+        PatmDbEngine eng = m_activeProfile->engine;
+        const PatmDbDriver *drv = patm_db_driver_get(eng);
+        drv->quote_ident(t.toUtf8().constData(), quoted.data(), quoted.size());
+
+        QString countSql = QString("SELECT COUNT(*) FROM %1").arg(QString::fromUtf8(quoted));
+        PatmResult res = {};
+        err = patm_db_query(m_activeConn, countSql.toUtf8().constData(), &res);
+        size_t rowCount = 0;
+        if (patm_is_ok(&err) && res.nrows > 0 && res.ncols > 0 && res.cells[0])
+            rowCount = (size_t)atoll(res.cells[0]);
+        patm_db_result_free(&res);
+
+        totalRows += rowCount;
+        stats += QString("<tr><td>%1</td><td>%2</td></tr>")
+            .arg(t.toHtmlEscaped())
+            .arg(rowCount);
+    }
+
+    stats += QString("<tr><td><b>Total</b></td><td><b>%1</b></td></tr>").arg(totalRows);
+    stats += "</table>";
+
+    /* Display in a new tab */
+    QTextBrowser *browser = new QTextBrowser;
+    browser->setHtml(stats);
+    browser->setOpenExternalLinks(false);
+    int idx = addTab(browser, QString("DB Stats - %1").arg(m_activeProfile->id));
+    m_tabWidget->setCurrentIndex(idx);
+    setStatus("Database statistics loaded.");
+}
+
+void MainWindow::onExportSql()
+{
+    if (!m_activeConn || !m_activeProfile) {
+        setStatus("Connect to a database first.");
+        return;
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(
+        this, "Export SQL Dump",
+        QString("%1_dump.sql").arg(m_activeProfile->dbname),
+        "SQL Files (*.sql);;All Files (*)");
+    if (fileName.isEmpty()) return;
+
+    /* Get table list */
+    PatmStrBuf json = {};
+    PatmError err = patm_db_list_tables(m_activeConn, &json);
+    if (!patm_is_ok(&err)) {
+        setStatus(QString("Export failed: %1").arg(err.msg));
+        patm_strbuf_free(&json);
+        return;
+    }
+
+    QStringList tables;
+    const char *p = json.data ? json.data : "";
+    char name[256];
+    while ((p = strchr(p, '"')) != nullptr) {
+        p++;
+        const char *end = strchr(p, '"');
+        if (!end) break;
+        size_t len = (size_t)(end - p);
+        if (len >= sizeof(name)) len = sizeof(name) - 1;
+        memcpy(name, p, len);
+        name[len] = '\0';
+        tables.append(QString::fromUtf8(name));
+        p = end + 1;
+    }
+    patm_strbuf_free(&json);
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        setStatus("Export failed: could not open file.");
+        return;
+    }
+
+    QTextStream ts(&file);
+    ts << "-- PATM SQL Dump\n";
+    ts << "-- Database: " << m_activeProfile->dbname << "\n";
+    ts << "-- Engine: " << patm_db_driver_get(m_activeProfile->engine)->display << "\n\n";
+
+    for (const QString &t : tables) {
+        /* Get CREATE TABLE statement */
+        QByteArray quoted(256, '\0');
+        const PatmDbDriver *drv = patm_db_driver_get(m_activeProfile->engine);
+        drv->quote_ident(t.toUtf8().constData(), quoted.data(), quoted.size());
+
+        QString createSql;
+        if (m_activeProfile->engine == PATM_DB_SQLITE) {
+            createSql = QString("SELECT sql FROM sqlite_master WHERE type='table' AND name='%1'")
+                .arg(t);
+        } else if (m_activeProfile->engine == PATM_DB_POSTGRESQL) {
+            createSql = QString(
+                "SELECT 'CREATE TABLE ' || quote_ident(c.relname) || ' (' || "
+                "string_agg(attname || ' ' || pg_catalog.format_type(atttypid, atttypmod), ', ' "
+                "ORDER BY attnum) || ');' "
+                "FROM pg_catalog.pg_attribute a "
+                "JOIN pg_catalog.pg_class c ON a.attrelid = c.oid "
+                "JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid "
+                "WHERE c.relname = '%1' AND a.attnum > 0 AND NOT a.attisdropped "
+                "GROUP BY c.relname").arg(t);
+        } else {
+            createSql = QString("SHOW CREATE TABLE %1").arg(QString::fromUtf8(quoted));
+        }
+
+        PatmResult res = {};
+        err = patm_db_query(m_activeConn, createSql.toUtf8().constData(), &res);
+        if (patm_is_ok(&err) && res.nrows > 0 && res.ncols > 0 && res.cells[0]) {
+            ts << "DROP TABLE IF EXISTS " << QString::fromUtf8(quoted) << ";\n";
+            ts << res.cells[0] << ";\n\n";
+        }
+        patm_db_result_free(&res);
+
+        /* Export data as INSERT statements */
+        QString selectSql = QString("SELECT * FROM %1").arg(QString::fromUtf8(quoted));
+        err = patm_db_query(m_activeConn, selectSql.toUtf8().constData(), &res);
+        if (patm_is_ok(&err) && res.nrows > 0 && res.ncols > 0) {
+            /* Get column names */
+            for (size_t r = 0; r < res.nrows; r++) {
+                ts << "INSERT INTO " << QString::fromUtf8(quoted) << " VALUES (";
+                for (size_t c = 0; c < res.ncols; c++) {
+                    if (c > 0) ts << ", ";
+                    size_t idx = r * res.ncols + c;
+                    if (!res.cells[idx]) {
+                        ts << "NULL";
+                    } else {
+                        /* Quote the value */
+                        QByteArray val = QByteArray::fromRawData(res.cells[idx], strlen(res.cells[idx]));
+                        ts << "'" << QString::fromUtf8(val.replace("'", "''")) << "'";
+                    }
+                }
+                ts << ");\n";
+            }
+            ts << "\n";
+        }
+        patm_db_result_free(&res);
+    }
+
+    file.close();
+    setStatus(QString("SQL dump exported to %1 (%2 tables)").arg(fileName).arg(tables.size()));
 }
 
 void MainWindow::onRunTool()

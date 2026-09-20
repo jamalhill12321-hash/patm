@@ -41,7 +41,7 @@ ConnectionPropertiesDialog::ConnectionPropertiesDialog(const char *connId, QWidg
     QFormLayout *fl = new QFormLayout(this);
 
     m_engineCombo = new QComboBox;
-    m_engineCombo->addItems({"PostgreSQL", "MySQL", "MariaDB"});
+    m_engineCombo->addItems({"PostgreSQL", "MySQL", "MariaDB", "SQLite"});
     fl->addRow("Engine:", m_engineCombo);
 
     m_idEdit = new QLineEdit;

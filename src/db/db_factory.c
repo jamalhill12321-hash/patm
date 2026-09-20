@@ -25,6 +25,7 @@
 extern const PatmDbDriver *patm_db_driver_pg(void);
 extern const PatmDbDriver *patm_db_driver_mysql(void);
 extern const PatmDbDriver *patm_db_driver_mariadb(void);
+extern const PatmDbDriver *patm_db_driver_sqlite(void);
 
 static const PatmDbDriver *g_registry[PATM_DB_ENGINE_COUNT];
 static int g_initialized = 0;
@@ -36,6 +37,7 @@ static void ensure_init(void)
     g_registry[PATM_DB_POSTGRESQL] = patm_db_driver_pg();
     g_registry[PATM_DB_MYSQL] = patm_db_driver_mysql();
     g_registry[PATM_DB_MARIADB] = patm_db_driver_mariadb();
+    g_registry[PATM_DB_SQLITE] = patm_db_driver_sqlite();
     g_initialized = 1;
 }
 

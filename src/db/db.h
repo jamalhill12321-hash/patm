@@ -36,6 +36,7 @@ typedef enum {
     PATM_DB_POSTGRESQL = 0,
     PATM_DB_MYSQL,
     PATM_DB_MARIADB,
+    PATM_DB_SQLITE,
     PATM_DB_ENGINE_COUNT
 } PatmDbEngine;
 

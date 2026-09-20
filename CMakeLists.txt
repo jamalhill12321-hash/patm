@@ -26,6 +26,7 @@ find_package(PkgConfig REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Sql)
 pkg_check_modules(LIBPQ REQUIRED IMPORTED_TARGET libpq)
 pkg_check_modules(MARIADB REQUIRED IMPORTED_TARGET libmariadb)
+pkg_check_modules(SQLITE3 REQUIRED IMPORTED_TARGET sqlite3)
 pkg_check_modules(LIBSECRET REQUIRED IMPORTED_TARGET libsecret-1)
 find_package(Python3 REQUIRED COMPONENTS Development.Embed)
 

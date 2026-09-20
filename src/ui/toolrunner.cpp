@@ -224,7 +224,7 @@ ToolRunner::ToolRunner(QWidget *parent)
     tgtGrid->addRow("Password:", m_tgtPass);
     tgtGrid->addRow("Database:", m_tgtDb);
     m_tgtEngine = new QComboBox;
-    m_tgtEngine->addItems({"PostgreSQL", "MySQL", "MariaDB"});
+    m_tgtEngine->addItems({"PostgreSQL", "MySQL", "MariaDB", "SQLite"});
     tgtGrid->addRow("Engine:", m_tgtEngine);
     tgtGroup->setVisible(false);
     vbox->addWidget(tgtGroup);

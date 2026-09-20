@@ -62,6 +62,8 @@ private slots:
     void onDeleteConnection();
     void onSqlQuery();
     void onSqlTerminal();
+    void onDbStats();
+    void onExportSql();
     void onRunTool();
     void onSettings();
     void onTableDoubleClicked(QListWidgetItem *item);

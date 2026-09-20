@@ -12,6 +12,7 @@ add_library(patm_core STATIC
     db/db_factory.c
     db/db_pg.c
     db/db_mysql.c
+    db/db_sqlite.c
     db/db_internal.c
     secure/secure.c
     pipeline/pipeline.c
@@ -43,6 +44,7 @@ target_link_libraries(patm_core PUBLIC
     PkgConfig::LIBPQ
     PkgConfig::MARIADB
     PkgConfig::LIBSECRET
+    PkgConfig::SQLITE3
     Python3::Python
     pthread
 )

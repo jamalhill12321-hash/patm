@@ -33,12 +33,39 @@ https://youtu.be/5DlpbQOPMj8
 
 ## What it does
 
-- **Connect to PostgreSQL, MySQL, or MariaDB** : passwords stay in your system keyring, never in config files. Supports TLS and SSH tunnels.
+- **Connect to PostgreSQL, MySQL, MariaDB, or SQLite** : passwords stay in your system keyring, never in config files. Supports TLS and SSH tunnels.
 - **Browse tables** : see what's in your database, double-click to preview.
 - **SQL query windows** : write queries, highlight and execute just the selection (or all of it). Save/load `.sql` files. Results show up in a grid.
 - **SQL terminal** : Get access to SQL with commands.
+- **DB Statistics** : view table row counts and database overview at a glance.
 - **Run tools** : built-in CSV export and table transfer. Write your own Python tools; PATM sandboxes them through a restricted API so they can query data but never touch credentials.
 - **Built-in installer** : one binary handles installation, setup, and the app itself.
+
+## How it works
+
+```
+┌─────────────────────────────────────────────────────┐
+│                    PATM App                         │
+│                                                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
+│  │ Connect  │  │  Query   │  │  Run Tools       │  │
+│  │ to DB    │──│  Editor  │──│  (CSV, Transfer) │  │
+│  └────┬─────┘  └────┬─────┘  └───────┬──────────┘  │
+│       │              │                │              │
+│       └──────────────┼────────────────┘              │
+│                      │                               │
+│              ┌───────┴────────┐                      │
+│              │  DB Driver     │                      │
+│              │  Interface     │                      │
+│              └───────┬────────┘                      │
+│         ┌────────────┼────────────┐                  │
+│         │            │            │                  │
+│    ┌────┴───┐  ┌─────┴────┐ ┌────┴─────┐           │
+│    │PostgreSQL│ │  MySQL/  │ │  SQLite  │           │
+│    │  (libpq) │ │ MariaDB  │ │(sqlite3) │           │
+│    └─────────┘ └──────────┘ └──────────┘           │
+└─────────────────────────────────────────────────────┘
+```
 
 ## Building
 
