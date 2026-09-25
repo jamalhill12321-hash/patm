@@ -59,30 +59,7 @@ https://youtu.be/5DlpbQOPMj8
 - **Run tools** : built-in CSV export and table transfer. Write your own Python tools; PATM sandboxes them through a restricted API so they can query data but never touch credentials.
 - **Built-in installer** : one binary handles installation, setup, and the app itself.
 
-## How it works
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    PATM App                         │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │ Connect  │  │  Query   │  │  Run Tools       │  │
-│  │ to DB    │──│  Editor  │──│  (CSV, Transfer) │  │
-│  └────┬─────┘  └────┬─────┘  └───────┬──────────┘  │
-│       │              │                │              │
-│       └──────────────┼────────────────┘              │
-│                      │                               │
-│              ┌───────┴────────┐                      │
-│              │  DB Driver     │                      │
-│              │  Interface     │                      │
-│              └───────┬────────┘                      │
-│         ┌────────────┼────────────┐                  │
-│         │            │            │                  │
-│    ┌────┴───┐  ┌─────┴────┐ ┌────┴─────┐           │
-│    │PostgreSQL│ │  MySQL/  │ │  SQLite  │           │
-│    │  (libpq) │ │ MariaDB  │ │(sqlite3) │           │
-│    └─────────┘ └──────────┘ └──────────┘           │
-└─────────────────────────────────────────────────────┘
 ```
 
 ## Building
@@ -142,11 +119,11 @@ xmake build test_ui_smoke
 ctest --test-dir build --output-on-failure
 ```
 
-The `pg_integration` test skips itself when no PostgreSQL server is running — that's normal.
+The `pg_integration` test skips itself when no PostgreSQL server is running, that's okay
 
 ## How tools work
 
-PATM bundles a couple of Python scripts (`export_csv.py`, `transfer_table.py`). They run inside an embedded Python interpreter and can only talk to databases through the `_patm` module. no raw connections, no credentials.
+PATM bundles a couple of Python scripts (`export_csv.py`, `transfer_table.py`). They run inside an embedded Python interpreter and can only talk to databases through the `_patm` module.
 
 Edit any tool inside the app and it saves your copy to `~/.config/patm/tools/`. Your copy shadows the shipped one so updates don't clobber your changes.
 
