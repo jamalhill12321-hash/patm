@@ -1,3 +1,8 @@
+/* Copyright (c) Jamal Hill
+ *
+ * This file is part of PATM.
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 /* PATM Fusion Dark — Qt QSS */
 /* palette: window_bg=#31363b base=#232629 text=#fcfcfc button_bg=#31363b */
 /* highlight=#3daee9 selection_bg=#3daee9 selection_text=#fcfcfc */

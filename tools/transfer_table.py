@@ -1,3 +1,7 @@
+# Copyright (c) Jamal Hill
+#
+# This file is part of PATM.
+# SPDX-License-Identifier: GPL-3.0-or-later
 # PATM tool: transfer-table
 #
 # Copies a table (all columns, all rows) from the SOURCE connection to the

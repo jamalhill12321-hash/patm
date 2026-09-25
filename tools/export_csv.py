@@ -1,3 +1,7 @@
+# Copyright (c) Jamal Hill
+#
+# This file is part of PATM.
+# SPDX-License-Identifier: GPL-3.0-or-later
 # PATM tool: export-csv
 #
 # Exports a table from the SOURCE connection to a CSV file.

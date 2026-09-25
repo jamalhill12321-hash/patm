@@ -1,3 +1,5 @@
+# Copyright (c) Jamal Hill
+# SPDX-License-Identifier: GPL-3.0-or-later
 add_executable(test_strbuf test_strbuf.c)
 target_link_libraries(test_strbuf PRIVATE patm_core)
 add_test(NAME strbuf COMMAND test_strbuf)

@@ -1,3 +1,8 @@
+/* Copyright (c) Jamal Hill
+ *
+ * This file is part of PATM.
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 /* PATM Classic Light — Qt QSS */
 /* palette: window_bg=#ecebe8 base=#ffffff text=#1a1a1a highlight=#35507c */
 

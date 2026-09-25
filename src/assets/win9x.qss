@@ -1,3 +1,8 @@
+/* Copyright (c) Jamal Hill
+ *
+ * This file is part of PATM.
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 /* PATM Windows 9x — Qt QSS */
 /* palette: window_bg=#c0c0c0 base=#ffffff text=#000000 selection_bg=#000080 */
 

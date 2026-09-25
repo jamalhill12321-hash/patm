@@ -1,5 +1,8 @@
 build/
 build-*/
+.xmake/
+AppDir/
+*.AppImage
 *.o
 *.a
 *.so

@@ -15,14 +15,34 @@
 
 A desktop app for people who are tired of writing throwaway scripts to move data between databases. Connect, query, tools, all in one place.
 
-**GPL-3.0-or-later** · **v0.0.0-experimental patch 11** · currently available for Linux only, might make it available to Windows later.
+**GPL-3.0-or-later** · **v0.0.0-experimental patch 12** · currently available for Linux only, might make it available to Windows later.
 
 ## Quick start
 
-Download the AppImage from [Releases](https://github.com/jamalhill12321-hash/patm/releases) and open it to run:
+PATM is available on [Flathub](https://flathub.org/apps/org.patm.jam) (under review):
 
 ```sh
-./patm-linux-x86_64.AppImage
+# Fedora
+flatpak install flathub org.patm.jam
+
+# Ubuntu/Debian (with Flatpak support)
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install flathub org.patm.jam
+
+# Arch
+flatpak install flathub org.patm.jam
+```
+
+Or download the prebuilt binary or AppImage from [Releases](https://github.com/jamalhill12321-hash/patm/releases):
+
+```sh
+# Binary
+chmod +x patm
+./patm
+
+# AppImage
+chmod +x PATM-x86_64.AppImage
+./PATM-x86_64.AppImage
 ```
 
 ## Presentation
@@ -69,21 +89,33 @@ https://youtu.be/5DlpbQOPMj8
 
 ```sh
 # Fedora
-sudo dnf install gcc make cmake qt6-qtbase-devel qt6-qtsvg-devel \
-    libpq-devel mariadb-connector-c-devel python3-devel libsecret-devel
+sudo dnf install gcc make xmake cmake qt6-qtbase-devel qt6-qtsvg-devel \
+    libpq-devel mariadb-connector-c-devel python3-devel libsecret-devel sqlite-devel
 
 # Ubuntu/Debian
 sudo apt update && sudo apt install -y \
-    gcc make cmake \
+    gcc make xmake cmake \
     qt6-base-dev qt6-svg-dev \
-    libpq-dev libmariadb-dev python3-dev libsecret-1-dev
+    libpq-dev libmariadb-dev python3-dev libsecret-1-dev libsqlite3-dev
 
 # Arch (Pacman)
 sudo pacman -Syu --needed \
-    gcc make cmake \
+    gcc make xmake cmake \
     qt6-base qt6-svg \
-    postgresql-libs mariadb-libs python libsecret
+    postgresql-libs mariadb-libs python libsecret sqlite
+```
 
+### Building with xmake (recommended)
+
+```sh
+xmake config
+xmake build patm
+./build/linux/x86_64/release/patm
+```
+
+### Building with CMake
+
+```sh
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build
 ./build/src/patm
@@ -102,6 +134,11 @@ On first run, PATM shows an installer wizard that sets up SQL engines, desktop s
 ## Testing
 
 ```sh
+# xmake
+xmake build test_strbuf test_db_quoting test_config test_theme_resources test_ui_smoke
+ctest --test-dir build --output-on-failure
+
+# CMake
 ctest --test-dir build --output-on-failure
 ```
 

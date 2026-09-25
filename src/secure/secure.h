@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) Jamal Hill
+ *
  * This file is part of PATM.
  *
  * PATM (Pipeline Automation Tool Manager) is free software: you can

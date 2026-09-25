@@ -1,3 +1,8 @@
+/* Copyright (c) Jamal Hill
+ *
+ * This file is part of PATM.
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 /* PATM Breeze Light — Qt QSS */
 /* palette: window_bg=#f7f7f7 base=#ffffff text=#232629 highlight=#3daee9 */
 
