@@ -89,23 +89,23 @@ https://youtu.be/5DlpbQOPMj8
 
 ```sh
 # Fedora
-sudo dnf install gcc make xmake cmake qt6-qtbase-devel qt6-qtsvg-devel \
+sudo dnf install gcc make xmake qt6-qtbase-devel qt6-qtsvg-devel \
     libpq-devel mariadb-connector-c-devel python3-devel libsecret-devel sqlite-devel
 
 # Ubuntu/Debian
 sudo apt update && sudo apt install -y \
-    gcc make xmake cmake \
+    gcc make xmake \
     qt6-base-dev qt6-svg-dev \
     libpq-dev libmariadb-dev python3-dev libsecret-1-dev libsqlite3-dev
 
 # Arch (Pacman)
 sudo pacman -Syu --needed \
-    gcc make xmake cmake \
+    gcc make xmake \
     qt6-base qt6-svg \
     postgresql-libs mariadb-libs python libsecret sqlite
 ```
 
-### Building with xmake (recommended)
+### Building from source
 
 ```sh
 xmake config
@@ -113,12 +113,12 @@ xmake build patm
 ./build/linux/x86_64/release/patm
 ```
 
-### Building with CMake
+### Building the AppImage
 
 ```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
-cmake --build build
-./build/src/patm
+xmake config
+xmake build appimage
+# Output: PATM-x86_64.AppImage
 ```
 
 On first run, PATM shows an installer wizard that sets up SQL engines, desktop shortcuts, and config. After that it opens straight into the app.
@@ -134,11 +134,11 @@ On first run, PATM shows an installer wizard that sets up SQL engines, desktop s
 ## Testing
 
 ```sh
-# xmake
-xmake build test_strbuf test_db_quoting test_config test_theme_resources test_ui_smoke
-ctest --test-dir build --output-on-failure
-
-# CMake
+xmake build test_strbuf
+xmake build test_db_quoting
+xmake build test_config
+xmake build test_theme_resources
+xmake build test_ui_smoke
 ctest --test-dir build --output-on-failure
 ```
 

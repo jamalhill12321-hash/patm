@@ -144,3 +144,112 @@ target("test_ui_smoke")
     add_cxxflags(qt_cflags, native_cflags)
     add_ldflags(qt_ldflags, native_ldflags)
     set_targetdir("$(builddir)/tests")
+
+-- AppImage: runs after `xmake build appimage`
+-- Usage: xmake build appimage
+-- Steps: 1) builds patm, 2) packages into AppImage
+target("appimage")
+    set_kind("phony")
+    after_build(function (target)
+        import("lib.detect.find_program")
+
+        local project_dir = os.projectdir()
+        local bindir = path.join(project_dir, "build", "linux", "x86_64", "release")
+        local patm_binary = path.join(bindir, "patm")
+        local appdir = path.join(project_dir, "AppDir")
+        local moc = find_program("/usr/lib64/qt6/libexec/moc")
+        local rcc = find_program("/usr/lib64/qt6/libexec/rcc")
+        local appimagetool = find_program("/tmp/appimagetool") or find_program("appimagetool")
+
+        -- Run moc
+        print("Running MOC...")
+        local headers = {
+            "src/ui/querywindow.h", "src/ui/sqlterminal.h", "src/ui/toolrunner.h",
+            "src/ui/resultgrid.h", "src/ui/tooleditor.h", "src/ui/settingsdialog.h",
+            "src/ui/connectionpropertiesdialog.h", "src/ui/mainwindow.h",
+            "installer/installerwizard.h"
+        }
+        local mocdir = path.join(project_dir, "build", "moc")
+        os.mkdir(mocdir)
+        for _, h in ipairs(headers) do
+            local name = path.basename(h)
+            os.execv(moc, {path.join(project_dir, h), "-o", path.join(mocdir, "moc_" .. name .. ".cpp")})
+        end
+
+        -- Run rcc
+        print("Running RCC...")
+        os.execv(rcc, {"--name", "resources", path.join(project_dir, "src/assets", "resources.qrc"),
+            "-o", path.join(project_dir, "build", "generated", "qrc_resources.cpp")})
+
+        -- Verify binary exists
+        if not os.isfile(patm_binary) then
+            raise("patm binary not found at " .. patm_binary .. ". Run `xmake build patm` first.")
+        end
+
+        -- Create AppDir
+        print("Creating AppDir...")
+        os.exec("rm -rf " .. appdir)
+        os.mkdir(path.join(appdir, "usr", "bin"))
+        os.mkdir(path.join(appdir, "usr", "lib"))
+        os.mkdir(path.join(appdir, "usr", "share", "applications"))
+        os.mkdir(path.join(appdir, "usr", "share", "icons", "hicolor", "256x256", "apps"))
+
+        os.execv("cp", {"-L", patm_binary, path.join(appdir, "usr", "bin", "patm")})
+        os.execv("strip", {"-s", path.join(appdir, "usr", "bin", "patm")})
+
+        -- Bundle libraries
+        print("Bundling shared libraries...")
+        local ldd_output = os.iorunv("ldd", {patm_binary})
+        for line in ldd_output:gmatch("[^\r\n]+") do
+            local lib = line:match("%s(/[^%s]+)")
+            if lib and os.isfile(lib) then
+                os.execv("cp", {"-L", lib, path.join(appdir, "usr", "lib")})
+            end
+        end
+
+        -- Patch RPATH
+        print("Patching RPATH...")
+        os.execv("patchelf", {"--set-rpath", "$ORIGIN/../lib", path.join(appdir, "usr", "bin", "patm")})
+        local libdir = path.join(appdir, "usr", "lib")
+        for _, f in ipairs(os.files(path.join(libdir, "lib*.so*"))) do
+            if os.isfile(f) and not os.islink(f) then
+                os.execv("patchelf", {"--set-rpath", "$ORIGIN", f})
+            end
+        end
+
+        -- Desktop file
+        io.writefile(path.join(appdir, "usr", "share", "applications", "patm.desktop"), [[
+[Desktop Entry]
+Type=Application
+Name=PATM
+Comment=Pipeline Automation Tool Manager
+Exec=patm
+Icon=patm-icon
+Categories=Development;Database;Utility;
+Terminal=false
+StartupNotify=true
+]])
+
+        -- Icon and symlinks
+        os.execv("cp", {path.join(project_dir, "src/assets", "patm-icon.svg"),
+            path.join(appdir, "usr", "share", "icons", "hicolor", "256x256", "apps", "patm-icon.svg")})
+        os.execv("ln", {"-sf", "usr/share/applications/patm.desktop", path.join(appdir, "patm.desktop")})
+        os.execv("ln", {"-sf", "usr/share/icons/hicolor/256x256/apps/patm-icon.svg", path.join(appdir, "patm-icon.svg")})
+
+        -- AppRun
+        io.writefile(path.join(appdir, "AppRun"), [[#!/bin/sh
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+export LD_LIBRARY_PATH="$SCRIPT_DIR/usr/lib:$LD_LIBRARY_PATH"
+export QT_PLUGIN_PATH="$SCRIPT_DIR/usr/lib/qt6/plugins"
+exec "$SCRIPT_DIR/usr/bin/patm" "$@"
+]])
+        os.execv("chmod", {"+x", path.join(appdir, "AppRun")})
+
+        -- Build AppImage
+        print("Building AppImage...")
+        local appimage = path.join(project_dir, "PATM-x86_64.AppImage")
+        os.exec("rm -f " .. appimage)
+        os.execv("env", {"ARCH=x86_64", appimagetool, appdir, appimage})
+
+        print("Done: " .. appimage)
+    end)
