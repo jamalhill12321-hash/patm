@@ -19,21 +19,7 @@ A desktop app for people who are tired of writing throwaway scripts to move data
 
 ## Quick start
 
-PATM is available on [Flathub](https://flathub.org/apps/org.patm.jam) (under review):
-
-```sh
-# Fedora
-flatpak install flathub org.patm.jam
-
-# Ubuntu/Debian (with Flatpak support)
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub org.patm.jam
-
-# Arch
-flatpak install flathub org.patm.jam
-```
-
-Or download the prebuilt binary or AppImage from [Releases](https://github.com/jamalhill12321-hash/patm/releases):
+Download the prebuilt binary or AppImage from [Releases](https://github.com/jamalhill12321-hash/patm/releases):
 
 ```sh
 # Binary
